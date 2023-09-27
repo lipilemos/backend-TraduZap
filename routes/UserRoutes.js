@@ -16,7 +16,7 @@ router.put("/", authGuard, userUpdateValidation(), validate, imageUpload.single(
 //create
 router.post("/register",userCreateValidation(), validate, register)
 // login
-router.post("/login", loginValidation(), validate, login )
+router.post("/login", console.log(this),loginValidation(), validate, login )
 //getCurrentUser
 router.get("/profile", authGuard, getCurrentUser)
 

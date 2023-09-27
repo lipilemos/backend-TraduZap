@@ -37,6 +37,8 @@ router.get("/user/:id", authGuard, getUserConfiguration)
 //get configuration by ID
 router.get("/:id", authGuard, getConfigurationById)
 
+router.get("/app/:id", getConfigurationById)
+
 //get configuration by ID
 router.get("/getByPhone/:id", getConfigurationByPhone)
 

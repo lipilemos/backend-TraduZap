@@ -122,11 +122,14 @@ const getConfigurationById = async (req, res) => {
     const {id} = req.params
 
     const configuration = await Configuration.findById(new mongoose.Types.ObjectId(id))
+    const plan = await Plans.findOne({userId:configuration.userId})
 
     if(!configuration)
         return res.status(404).json({errors:["Configuração não encontrada"]})
+    if(plan)
+        configuration.plan = plan
 
-    return res.status(200).json(configuration)
+    return res.status(200).json({configuration, plan})
 }
 const getConfigurationByPhone = async (req, res) => {
     const {id} = req.params
