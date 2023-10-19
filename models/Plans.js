@@ -1,19 +1,19 @@
 const mongoose = require("mongoose");
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const plansSchema = new Schema(
     {
-        name:String,
-        planId:mongoose.ObjectId,
-        price:String,
-        userId:mongoose.ObjectId,
-        active:Boolean,
-        paymentId:String,
+        name: String,
+        planId: mongoose.ObjectId,
+        price: String,
+        userId: mongoose.ObjectId,
+        active: Boolean,
+        paymentId: String,
         usageChamadasAPI: Number,
         usageUse: Number,
     },
     {
-        timestamps:true
+        timestamps: true
     }
 )
 

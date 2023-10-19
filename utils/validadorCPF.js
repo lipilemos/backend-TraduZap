@@ -1,4 +1,4 @@
- const validarCPF = (cpf) => {
+const validarCPF = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, '');
     if (cpf == '') return false;
     if (cpf.length != 11 ||

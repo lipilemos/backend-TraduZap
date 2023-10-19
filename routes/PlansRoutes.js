@@ -2,8 +2,8 @@ const express = require("express")
 const router = express.Router()
 
 //controller
-const {insertPlans, deletePlans, getAllPlans, getUserPlans, getPlansById,updatePlans, updateUsageAPI, updateUsageUse, resetUsageAPI} = require("../controllers/PlansController")
-const {getTypesPlansById, getAllTypesPlans} = require("../controllers/TypesPlansController")
+const { insertPlans, deletePlans, getAllPlans, getUserPlans, getPlansById, updatePlans, updateUsageAPI, updateUsageUse, resetUsageAPI } = require("../controllers/PlansController")
+const { getTypesPlansById, getAllTypesPlans } = require("../controllers/TypesPlansController")
 //middlewares
 const validate = require("../middleware/handleValidation")
 const authGuard = require("../middleware/authGuard")
@@ -17,9 +17,9 @@ const authGuard = require("../middleware/authGuard")
 router.get("/types", getAllTypesPlans)
 //routes plans
 //create
-router.post("/",authGuard, validate, insertPlans)
+router.post("/", authGuard, validate, insertPlans)
 // delete
-router.delete("/:id",authGuard,deletePlans )
+router.delete("/:id", authGuard, deletePlans)
 //get all plans
 router.get("/", authGuard, getAllPlans)
 //get User plans by id

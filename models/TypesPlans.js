@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const typesPlansSchema = new Schema(
     {
-        name:String,
-        price:String,
+        name: String,
+        price: String,
         recursos: [String],
         limiteCaracteres: Number,
         limiteChamadasAPI: Number,
         limiteUso: Number,
     },
     {
-        timestamps:true
+        timestamps: true
     }
 )
 

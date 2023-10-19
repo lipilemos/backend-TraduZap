@@ -3,12 +3,12 @@ const User = require("../models/User")
 const jwt = require("jsonwebtoken")
 const jwtSecret = process.env.JWT_SECRET
 
-const authGuard = async (req, res, next) =>{
+const authGuard = async (req, res, next) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
-    if(!token){
-        res.status(401).json({errors:["Acesso negado"]})
+    if (!token) {
+        res.status(401).json({ errors: ["Acesso negado"] })
         return
     }
     try {
@@ -17,7 +17,7 @@ const authGuard = async (req, res, next) =>{
 
         next()
     } catch (error) {
-        res.status(401).json({errors:["Token inválido"]})
+        res.status(401).json({ errors: ["Token inválido"] })
     }
 
 }

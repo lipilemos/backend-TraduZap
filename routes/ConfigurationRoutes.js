@@ -3,13 +3,13 @@ const router = express.Router()
 
 //controller
 const {
-    insertConfiguration, 
-    deleteConfiguration, 
-    getAllConfiguration, 
+    insertConfiguration,
+    deleteConfiguration,
+    getAllConfiguration,
     updateQrCode,
-    getUserConfiguration, 
-    getConfigurationById, 
-    updateConfiguration,    
+    getUserConfiguration,
+    getConfigurationById,
+    updateConfiguration,
     insertListContacts,
     deleteListContacts,
     insertNewConfiguration,
@@ -17,7 +17,7 @@ const {
 } = require("../controllers/ConfigurationController")
 
 //middlewares
-const {configurationInsertValidation, configurationUpdateValidation, listContactUpdateValidation} = require("../middleware/configurationValidation")
+const { configurationInsertValidation, configurationUpdateValidation, listContactUpdateValidation } = require("../middleware/configurationValidation")
 const validate = require("../middleware/handleValidation")
 const authGuard = require("../middleware/authGuard")
 
@@ -25,9 +25,9 @@ const authGuard = require("../middleware/authGuard")
 router.get("/getAll", getAllConfiguration)
 
 //create
-router.post("/",authGuard, validate, insertNewConfiguration)
+router.post("/", authGuard, validate, insertNewConfiguration)
 // delete
-router.delete("/:id",authGuard,deleteConfiguration)
+router.delete("/:id", authGuard, deleteConfiguration)
 //get all configuration
 router.get("/", authGuard, getAllConfiguration)
 //get User configuration by id
