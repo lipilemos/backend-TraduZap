@@ -8,11 +8,6 @@ const { getTypesPlansById, getAllTypesPlans } = require("../controllers/TypesPla
 const validate = require("../middleware/handleValidation")
 const authGuard = require("../middleware/authGuard")
 
-
-
-
-
-
 //get All Types Plans
 router.get("/types", getAllTypesPlans)
 //routes plans
@@ -26,8 +21,7 @@ router.get("/", authGuard, getAllPlans)
 router.get("/user/:id", authGuard, getUserPlans)
 //get plans by ID
 router.get("/:id", authGuard, getPlansById)
-
-//update a planss
+//reset uso api
 router.put("/reset", resetUsageAPI)
 //update a plans
 router.put("/:id", authGuard, validate, updatePlans)

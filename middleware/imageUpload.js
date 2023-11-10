@@ -17,6 +17,7 @@ const imageStorage = multer.diskStorage({
     filename: (req, file, callback) => {
         callback(null, Date.now() + path.extname(file.originalname))
     }
+    
 })
 const imageUpload = multer({
     storage: imageStorage,
@@ -27,6 +28,15 @@ const imageUpload = multer({
             return callback(new Error("Por favor envia apenas imagens PGN ou JPG"))
         }
         callback(undefined, true)
+    },
+    onFileUploadStart: function (file) {
+        console.log(file.fieldname + ' is starting ...')
+    },
+    onFileUploadData: function (file, data) {
+        console.log(data.length + ' of ' + file.fieldname + ' arrived')
+    },
+    onFileUploadComplete: function (file) {
+        console.log(file.fieldname + ' uploaded to  ' + file.path)
     }
 })
 module.exports = { imageUpload }

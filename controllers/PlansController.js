@@ -4,7 +4,7 @@ const TypesPlans = require("../models/TypesPlans")
 const User = require("../models/User")
 const mongoose = require("mongoose")
 
-//insert new plans
+//insert new plans + configuration
 const insertPlans = async (req, res) => {
     //get body da requisição
     const { planId, paymentId } = req.body
@@ -133,7 +133,7 @@ const getPlansById = async (req, res) => {
         return
     }
 }
-//update a plans
+//update/downgrade de plano
 const updatePlans = async (req, res) => {
     const { id } = req.params
     const { planId, paymentId } = req.body
@@ -156,7 +156,7 @@ const updatePlans = async (req, res) => {
         if (paymentId) {
             plans.paymentId = paymentId
         }
-
+        //torna o plano ativo e zera o uso para a contagem do limite do plano novo
         plans.active = true
         plans.planId = newPlan._id
         plans.usageChamadasAPI = 0
@@ -165,6 +165,8 @@ const updatePlans = async (req, res) => {
 
         await plans.save()
 
+        //se nao for um plano custom ou downgrade do plano custom
+        //torna as mensagens traduzidas e somente de contatos da lista como falsa
         if (plans.name !== 'custom') {
             const userConfiguration = await Configuration.findOne({ userId: reqUser._id })
             if (!userConfiguration) {
@@ -178,7 +180,6 @@ const updatePlans = async (req, res) => {
                     .json({ errors: ["Ocorreu um erro de configuração, tente novamente mais tarde."] })
                 return
             }
-
             userConfiguration.onlyContactList = false
             userConfiguration.translateMessage = false
             await userConfiguration.save()
@@ -190,7 +191,7 @@ const updatePlans = async (req, res) => {
         return
     }
 }
-//update usage API
+//update uso limite por usuario baseado no limite do plano
 const updateUsageAPI = async (req, res) => {
     const { id } = req.params
     try {
@@ -219,7 +220,7 @@ const updateUsageAPI = async (req, res) => {
         return
     }
 }
-//update usage API
+//update uso da API diario 0:00
 const resetUsageAPI = async (req, res) => {
     try {
         const userPlans = await Plans.updateMany({ usageChamadasAPI: 0 })
@@ -231,7 +232,7 @@ const resetUsageAPI = async (req, res) => {
         return
     }
 }
-//update usage Total
+//update uso limite diario por usuario baseado no limite diario do plano
 const updateUsageUse = async (req, res) => {
     const { id } = req.params
     try {
@@ -249,7 +250,6 @@ const updateUsageUse = async (req, res) => {
         if (userPlans.usageUse >= typesPlans.limiteUso)
             return res.status(402).json({ errors: ["Plano excedeu o limite de uso!"] });
 
-
         await userPlans.save()
 
         res.status(200).json({ userPlans, message: "Plano atualizado com sucesso!" })
@@ -259,6 +259,7 @@ const updateUsageUse = async (req, res) => {
         return
     }
 }
+
 module.exports = {
     insertPlans, deletePlans, getAllPlans, getUserPlans, getPlansById, updatePlans, updateUsageAPI, updateUsageUse, resetUsageAPI
 }

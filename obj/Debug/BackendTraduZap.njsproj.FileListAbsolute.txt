@@ -1,0 +1,3 @@
+C:\Users\liped\Documents\ProjetosJavascript\backend-ZAPGPT\obj\Debug\BackendTraduZap.njsproj.AssemblyReference.cache
+C:\Users\liped\Documents\ProjetosJavascript\backend-ZAPGPT\obj\Debug\BackendTraduZap.njsproj.CoreCompileInputs.cache
+C:\Users\liped\Documents\ProjetosJavascript\backend-ZAPGPT\bin\Microsoft.NodejsTools.WebRole.dll
