@@ -26,14 +26,14 @@ const createReference = async (req, res) => {
                 "installments": 1,
             },
             'back_urls': {
-                'success': "http://localhost:3000/user/payment/status/:id",
-                'failure': "http://localhost:3000/plans",
-                'pending': "http://localhost:3000/user/payment/status/:id"
+                'success': "http://www.traduzap.com.br/user/payment/status/:id",
+                'failure': "http://www.traduzap.com.br/plans",
+                'pending': "http://www.traduzap.com.br/user/payment/status/:id"
             },
             'statement_descriptor': "Plano TraduZap. Transcrição de áudio para o seu Whatsapp.",
             'external_reference': planId,
             'auto_return': "approved",
-            //'notification_url': 'http://localhost:5000/api/payments/update_payments',
+            //'notification_url': 'http://www.traduzap.com.br:5000/api/payments/update_payments',
         };
         const preferences = new Preference(client)
         preferences.create({
