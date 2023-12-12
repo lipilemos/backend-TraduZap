@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 //controller
-const { register, login, getCurrentUser, update, getUserById } = require("../controllers/UserController")
+const { register, login, getCurrentUser, update, getUserById, sendPasswordResetEmail, newPassword } = require("../controllers/UserController")
 
 //middlewares
 const validate = require("../middleware/handleValidation")
@@ -15,8 +15,11 @@ const { imageUpload } = require("../middleware/imageUpload")
 router.put("/", authGuard, userUpdateValidation(), validate, imageUpload.single("profileImage"), update)
 //create
 router.post("/register", userCreateValidation(), validate, register)
-// login
+//login
 router.post("/login", loginValidation(), validate, login)
+//send Reset Password email
+router.post("/resetPassword", validate, sendPasswordResetEmail)
+router.post("/newPassword", validate, newPassword)
 //getCurrentUser
 router.get("/profile", authGuard, getCurrentUser)
 

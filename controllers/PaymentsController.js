@@ -17,7 +17,7 @@ const createReference = async (req, res) => {
             'items': [
                 {
                     'id': planId,
-                    'title': "Plano TraduZap",
+                    'title': `Plano TraduZap ${plan.name}`,
                     'unit_price': Number(plan.price),
                     'quantity': 1,
                 }
@@ -26,14 +26,14 @@ const createReference = async (req, res) => {
                 "installments": 1,
             },
             'back_urls': {
-                'success': "http://www.traduzap.com.br/user/payment/status/:id",
-                'failure': "http://www.traduzap.com.br/plans",
-                'pending': "http://www.traduzap.com.br/user/payment/status/:id"
+                'success': "https://www.site.traduzapp.com.br/user/payment/status/:id",
+                'failure': "https://www.site.traduzapp.com.br/plans",
+                'pending': "https://www.site.traduzapp.com.br/user/payment/status/:id"
             },
             'statement_descriptor': "Plano TraduZap. Transcrição de áudio para o seu Whatsapp.",
             'external_reference': planId,
             'auto_return': "approved",
-            //'notification_url': 'http://www.traduzap.com.br:5000/api/payments/update_payments',
+            //'notification_url': 'https://www.site.traduzapp.com.br:3000/api/payments/update_payments',
         };
         const preferences = new Preference(client)
         preferences.create({
@@ -177,7 +177,7 @@ const processPayments = async (req, res) => {
             //if sucess
             else {
                 const newConfiguration = await Configuration.create({
-                    name: "Minha Configuração",
+                    name: `Configuração ${user.name}`,
                     groupMessage: false,
                     selfMessage: false,
                     sharedMessage: false,

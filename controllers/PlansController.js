@@ -211,6 +211,9 @@ const updateUsageAPI = async (req, res) => {
         if (userPlans.usageChamadasAPI >= typesPlans.usageChamadasAPI)
             return res.status(402).json({ errors: ["Plano excedeu o limite de uso Diario!"] });
 
+        if (userPlans.usageUse >= typesPlans.limiteUso)
+            userPlan.active = false;
+
         await userPlans.save()
 
         res.status(200).json({ userPlans, message: "Plano atualizado com sucesso!" })

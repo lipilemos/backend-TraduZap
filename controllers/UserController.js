@@ -2,12 +2,16 @@ const User = require("../models/User")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis")
 
 const jwtSecret = process.env.JWT_SECRET
 
 const generateToken = (id) => {
     return jwt.sign({ id }, jwtSecret, { expiresIn: "7d" })
 }
+const oAuth2Client = new google.auth.OAuth2(process.env.ID_CLIENT, process.env.SECRET_KEY, process.env.REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
 //register new user
 const register = async (req, res) => {
@@ -58,7 +62,6 @@ const login = async (req, res) => {
         res.status(404).json({ errors: ["Usuário não encontrado"] })
         return
     }
-
     //compare password decrypted
     if (!(await bcrypt.compare(password, user.password))) {
         res.status(422).json({ errors: ["Senha inválida"] })
@@ -130,6 +133,152 @@ const getUserById = async (req, res) => {
         res.status(404).json({ errors: ["Usuário não encontrado"] })
     }
 }
+// Redefinir senha
+const newPassword = async (req, res) => {
+    const { token, password, confirmPassword } = req.body;
+
+    try {
+        if (password !== confirmPassword) {
+            res.status(402).json({ errors: ["As senhas não são iguais"] });
+            return;
+        }
+        // Verificar se o token é válido
+        const decodedToken = jwt.verify(token, jwtSecret);
+
+        // Encontrar o usuário com base no token
+        const user = await User.findOne({ email: decodedToken.email });
+
+        if (!user) {
+            res.status(404).json({ errors: ["Usuário não encontrado"] });
+            return;
+        }
+
+        // Atualizar a senha do usuário
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+        user.password = passwordHash;
+
+        // Limpar o token de redefinição de senha
+        //user.resetToken = null;
+
+        // Salvar o usuário atualizado
+        await user.save();
+
+        res.status(200).json({ message: "Senha redefinida com sucesso" });
+    } catch (error) {
+        res.status(400).json({ errors: ["Token inválido ou expirado"] });
+    }
+};
+const sendPasswordResetEmail = async (req, res) => {
+    const { email } = req.body;
+   
+    try {
+        
+        // Encontrar o usuário com base no token
+        const user = await User.findOne({ email});
+
+        if (!user) {
+            res.status(404).json({ errors: ["Usuário não encontrado"] });
+            return;
+        }
+        // Gere um token para redefinição de senha
+        const resetToken = jwt.sign({ email }, jwtSecret, { expiresIn: "1h" });
+
+        const acessToken = await oAuth2Client.getAccessToken();
+        // Configurar o transporte de e-mail (substitua com suas próprias configurações)
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: "OAuth2",
+                user: "traduzapapp@gmail.com",
+                clientId: process.env.ID_CLIENT,
+                clientSecret: process.env.SECRET_KEY,
+                refreshToken: process.env.REFRESH_TOKEN,
+                acessToken: acessToken
+            },
+        });
+
+        // Opções do e-mail
+        const mailOptions = {
+            from: "traduzapapp@gmail.com",
+            to: email,
+            subject: "Redefinição de Senha",
+            //text: `Você solicitou a redefinição de senha. Clique no seguinte link para redefinir sua senha: http://localhost:3000/reset/${resetToken}`,
+            html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinição de Senha</title>
+    <style>
+        .header {
+            background-color: #00a884;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .title {
+            margin: 0;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            width: auto;
+            text-align: left;
+        }
+
+        img {
+            width: 36px;
+            margin-right: 5px;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #background {
+            background-image: url('https://site.traduzapp.com.br/static/media/Fundo-WhatsApp-1.bded4f44087fb4e89252.png');
+            height: 500px;
+            text-align: center;
+        }
+
+        #content {
+            padding: 1.5em 0.5em;
+            max-width: 600px;
+            margin: 0 auto 2em auto;
+        }
+    </style>
+</head>
+<body>
+    <div class='header'>
+        <h1 class='title'>
+            <img src="https://site.traduzapp.com.br/static/media/logo192.ef7c0a9756382c1202a8.png" alt="Logo">TraduzApp
+        </h1>
+    </div>
+
+    <div id="background">
+        <div id="content">
+            <h1>R<span style="font-weight: 100; font-size: x-large;">edefinição de Senha</span></h1>
+            <p class="subtitle">Você solicitou a redefinição de senha. Clique no seguinte link para redefinir sua senha: </br> <a href='https://site.traduzapp.com.br/reset/${resetToken}'>Clique aqui</a></p>
+        </div>
+    </div>
+</body>
+</html>`
+            };
+
+        // Enviar e-mail
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({ message: "Senha enviada com sucesso" });
+    } catch (error) {
+        res.status(400).json({ errors: ["Erro ao enviar senha"] });
+    }
+
+};
+
 module.exports = {
-    register, login, getCurrentUser, update, getUserById
+    register, login, getCurrentUser, update, getUserById, newPassword, sendPasswordResetEmail
 }

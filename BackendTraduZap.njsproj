@@ -24,6 +24,7 @@
   <ItemGroup>
     <Content Include=".env" />
     <Content Include="controllers\NotifyController.js" />
+    <Content Include="Email\template.html" />
     <Content Include="models\Notify.js" />
     <Content Include="models\Imagens.js" />
     <Content Include="package-lock.json" />
@@ -77,6 +78,7 @@
     <Folder Include="controllers" />
     <Folder Include="middleware" />
     <Folder Include="models" />
+    <Folder Include="Email\" />
     <Folder Include="routes" />
     <Folder Include="uploads" />
     <Folder Include="uploads\users" />
